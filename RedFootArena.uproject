@@ -1,0 +1,16 @@
+{
+  "FileVersion": 3,
+  "Version": 1,
+  "VersionName": "0.1.0",
+  "FriendlyName": "RedFoot Arena",
+  "Description": "Arcade 3D football arena game focused on a fast offline MVP.",
+  "Category": "Games",
+  "Modules": [
+    {
+      "Name": "RedFootArena",
+      "Type": "Runtime",
+      "LoadingPhase": "Default"
+    }
+  ]
+}
+
