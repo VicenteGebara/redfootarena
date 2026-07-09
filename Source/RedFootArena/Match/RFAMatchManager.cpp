@@ -1,7 +1,7 @@
 #include "Match/RFAMatchManager.h"
 #include "Ball/RFABallActor.h"
 #include "GameFramework/Character.h"
-#include "GameFramework/MovementComponent.h"
+#include "GameFramework/PawnMovementComponent.h"
 #include "Goals/RFAGoalActor.h"
 #include "Match/RFAScoreManager.h"
 #include "TimerManager.h"
@@ -148,4 +148,3 @@ void ARFAMatchManager::EndMatch()
 
     OnMatchEnded.Broadcast(WinningTeam);
 }
-

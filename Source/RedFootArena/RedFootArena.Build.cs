@@ -14,6 +14,8 @@ public class RedFootArena : ModuleRules
             "InputCore",
             "AIModule"
         });
+
+        PublicIncludePaths.Add(ModuleDirectory);
+        PrivateIncludePaths.Add(ModuleDirectory);
     }
 }
-

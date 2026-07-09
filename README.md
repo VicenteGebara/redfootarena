@@ -4,6 +4,12 @@ RedFoot Arena is an arcade 3D football game prototype built with Unreal Engine.
 
 Current focus: offline MVP only.
 
+## Local build requirements
+
+- Unreal Engine 5.8.
+- Visual Studio 2022 Build Tools with the C++ toolchain.
+- Windows SDK 10.0.19041.0 or newer.
+
 Implemented architecture:
 
 - third-person player character;

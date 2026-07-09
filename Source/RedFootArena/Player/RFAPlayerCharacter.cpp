@@ -6,6 +6,7 @@
 #include "Components/RFAPlayerStatsComponent.h"
 #include "Components/RFAStaminaComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Engine/OverlapResult.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
