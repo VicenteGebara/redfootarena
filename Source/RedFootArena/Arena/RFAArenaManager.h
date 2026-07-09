@@ -58,7 +58,7 @@ protected:
     TSubclassOf<ARFAGoalActor> GoalActorClass;
 
 private:
-    UStaticMeshComponent* CreateArenaPiece(const FString& Name, const FVector& Location, const FVector& Size);
+    UStaticMeshComponent* CreateArenaPiece(const FString& Name, const FVector& Location, const FVector& Size, bool bBlocksMovement = true, const FLinearColor& Color = FLinearColor::White);
     ARFAGoalActor* SpawnGoal(float XSign);
 
     UPROPERTY()

@@ -62,6 +62,9 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Visual")
     UStaticMeshComponent* BodyMesh;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Visual")
+    FLinearColor BodyColor = FLinearColor(0.9f, 0.12f, 0.1f, 1.0f);
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     URFAStaminaComponent* StaminaComponent;
 
@@ -79,4 +82,10 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ball")
     float PassLift = 0.05f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ball")
+    float BallActionCooldown = 0.18f;
+
+private:
+    float BallActionCooldownRemaining = 0.0f;
 };

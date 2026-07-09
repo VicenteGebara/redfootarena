@@ -30,13 +30,20 @@ void ARFASimpleBotController::Tick(float DeltaSeconds)
         return;
     }
 
-    FVector ToBall = CachedBall->GetActorLocation() - ControlledPawn->GetActorLocation();
+    const FVector BallLocation = CachedBall->GetActorLocation();
+    FVector ToBall = BallLocation - ControlledPawn->GetActorLocation();
     ToBall.Z = 0.0f;
 
     const float DistanceToBall = ToBall.Size();
     if (DistanceToBall > KickDistance)
     {
-        const FVector MoveDirection = ToBall.GetSafeNormal();
+        FVector ToApproachLocation = GetApproachLocation() - ControlledPawn->GetActorLocation();
+        ToApproachLocation.Z = 0.0f;
+
+        const FVector MoveDirection = ToApproachLocation.Size() > DesiredApproachDistance
+            ? ToApproachLocation.GetSafeNormal()
+            : ToBall.GetSafeNormal();
+
         ControlledPawn->AddMovementInput(MoveDirection, 1.0f);
         ControlledPawn->SetActorRotation(MoveDirection.Rotation());
         return;
@@ -74,3 +81,14 @@ FVector ARFASimpleBotController::GetAttackTarget() const
     return FVector(TargetX, 0.0f, 90.0f);
 }
 
+FVector ARFASimpleBotController::GetApproachLocation() const
+{
+    if (!CachedBall)
+    {
+        return FVector::ZeroVector;
+    }
+
+    FVector BallToGoal = GetAttackTarget() - CachedBall->GetActorLocation();
+    BallToGoal.Z = 0.0f;
+    return CachedBall->GetActorLocation() - BallToGoal.GetSafeNormal() * ApproachOffsetFromBall;
+}

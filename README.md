@@ -21,6 +21,14 @@ Implemented architecture:
 - simple generated arena;
 - basic opponent bot controller.
 
+Latest MVP loop improvements:
+
+- clearer HUD with score, timer, stamina and goal restart feedback;
+- procedural arena colors and simple field markings;
+- colored player and opponent bodies;
+- small kick/pass cooldown for more predictable ball control;
+- bot approach logic that tries to line up behind the ball before shooting.
+
 Out of scope for now:
 
 - online multiplayer;

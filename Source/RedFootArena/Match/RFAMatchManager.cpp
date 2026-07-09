@@ -33,6 +33,9 @@ void ARFAMatchManager::InitializeMatch(ARFAScoreManager* InScoreManager, ARFABal
     Ball = InBall;
     BallSpawnLocation = InBallSpawnLocation;
     RemainingTimeSeconds = MatchDurationSeconds;
+    bMatchFinished = false;
+    bHasScoringTeam = false;
+    bWaitingForRestart = false;
 
     if (ScoreManager)
     {
@@ -76,6 +79,21 @@ void ARFAMatchManager::StartMatch()
     OnMatchStarted.Broadcast();
 }
 
+float ARFAMatchManager::GetRestartRemainingTime() const
+{
+    if (!bWaitingForRestart || !GetWorld())
+    {
+        return 0.0f;
+    }
+
+    return FMath::Max(0.0f, GetWorld()->GetTimerManager().GetTimerRemaining(GoalResetTimerHandle));
+}
+
+bool ARFAMatchManager::IsMatchTied() const
+{
+    return ScoreManager && ScoreManager->GetHomeScore() == ScoreManager->GetAwayScore();
+}
+
 void ARFAMatchManager::HandleGoalScored(ERedFootTeam ScoringTeam, ARFAGoalActor* Goal, ARFABallActor* ScoredBall)
 {
     if (bWaitingForRestart || !bMatchActive)
@@ -88,7 +106,10 @@ void ARFAMatchManager::HandleGoalScored(ERedFootTeam ScoringTeam, ARFAGoalActor*
         ScoreManager->AddGoal(ScoringTeam);
     }
 
+    LastScoringTeam = ScoringTeam;
+    bHasScoringTeam = true;
     bWaitingForRestart = true;
+    OnGoalScored.Broadcast(ScoringTeam, GoalResetDelay);
 
     if (Ball)
     {
@@ -139,8 +160,9 @@ void ARFAMatchManager::ResetRegisteredActors()
 void ARFAMatchManager::EndMatch()
 {
     bMatchActive = false;
+    bMatchFinished = true;
 
-    ERedFootTeam WinningTeam = ERedFootTeam::Home;
+    WinningTeam = ERedFootTeam::Home;
     if (ScoreManager && ScoreManager->GetAwayScore() > ScoreManager->GetHomeScore())
     {
         WinningTeam = ERedFootTeam::Away;

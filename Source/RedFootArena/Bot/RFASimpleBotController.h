@@ -31,15 +31,21 @@ protected:
     float KickCooldownSeconds = 1.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Bot")
+    float ApproachOffsetFromBall = 180.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Bot")
+    float DesiredApproachDistance = 80.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Bot")
     float AttackGoalX = -1980.0f;
 
 private:
     ARFABallActor* FindBall() const;
     FVector GetAttackTarget() const;
+    FVector GetApproachLocation() const;
 
     UPROPERTY()
     ARFABallActor* CachedBall;
 
     float KickCooldownRemaining = 0.0f;
 };
-

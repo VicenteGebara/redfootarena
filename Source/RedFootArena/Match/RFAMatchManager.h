@@ -11,6 +11,7 @@ class ARFAScoreManager;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRFAOnMatchStarted);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRFAOnMatchEnded, ERedFootTeam, WinningTeam);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRFAOnMatchGoalScored, ERedFootTeam, ScoringTeam, float, RestartDelay);
 
 UCLASS()
 class REDFOOTARENA_API ARFAMatchManager : public AActor
@@ -44,6 +45,27 @@ public:
     bool IsMatchActive() const { return bMatchActive; }
 
     UFUNCTION(BlueprintPure, Category = "Match")
+    bool IsWaitingForRestart() const { return bWaitingForRestart; }
+
+    UFUNCTION(BlueprintPure, Category = "Match")
+    bool IsMatchFinished() const { return bMatchFinished; }
+
+    UFUNCTION(BlueprintPure, Category = "Match")
+    bool HasScoringTeam() const { return bHasScoringTeam; }
+
+    UFUNCTION(BlueprintPure, Category = "Match")
+    ERedFootTeam GetLastScoringTeam() const { return LastScoringTeam; }
+
+    UFUNCTION(BlueprintPure, Category = "Match")
+    ERedFootTeam GetWinningTeam() const { return WinningTeam; }
+
+    UFUNCTION(BlueprintPure, Category = "Match")
+    bool IsMatchTied() const;
+
+    UFUNCTION(BlueprintPure, Category = "Match")
+    float GetRestartRemainingTime() const;
+
+    UFUNCTION(BlueprintPure, Category = "Match")
     ARFAScoreManager* GetScoreManager() const { return ScoreManager; }
 
     UPROPERTY(BlueprintAssignable, Category = "Match")
@@ -51,6 +73,9 @@ public:
 
     UPROPERTY(BlueprintAssignable, Category = "Match")
     FRFAOnMatchEnded OnMatchEnded;
+
+    UPROPERTY(BlueprintAssignable, Category = "Match")
+    FRFAOnMatchGoalScored OnGoalScored;
 
 protected:
     UFUNCTION()
@@ -86,7 +111,10 @@ private:
 
     FVector BallSpawnLocation = FVector::ZeroVector;
     float RemainingTimeSeconds = 0.0f;
+    ERedFootTeam LastScoringTeam = ERedFootTeam::Home;
+    ERedFootTeam WinningTeam = ERedFootTeam::Home;
     bool bMatchActive = false;
     bool bWaitingForRestart = false;
+    bool bMatchFinished = false;
+    bool bHasScoringTeam = false;
 };
-

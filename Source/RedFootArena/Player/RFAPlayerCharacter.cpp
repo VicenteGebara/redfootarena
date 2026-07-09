@@ -10,6 +10,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "UObject/ConstructorHelpers.h"
 
 ARFAPlayerCharacter::ARFAPlayerCharacter()
@@ -63,11 +64,21 @@ void ARFAPlayerCharacter::BeginPlay()
     {
         StaminaComponent->SetMaxStamina(StatsComponent->GetMaxStamina());
     }
+
+    if (BodyMesh)
+    {
+        if (UMaterialInstanceDynamic* DynamicMaterial = BodyMesh->CreateAndSetMaterialInstanceDynamic(0))
+        {
+            DynamicMaterial->SetVectorParameterValue(TEXT("Color"), BodyColor);
+        }
+    }
 }
 
 void ARFAPlayerCharacter::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
+
+    BallActionCooldownRemaining = FMath::Max(0.0f, BallActionCooldownRemaining - DeltaSeconds);
 
     if (!StatsComponent || !StaminaComponent)
     {
@@ -195,6 +206,11 @@ void ARFAPlayerCharacter::StopSprint()
 
 void ARFAPlayerCharacter::ApplyBallAction(float Strength, float Lift)
 {
+    if (BallActionCooldownRemaining > 0.0f)
+    {
+        return;
+    }
+
     ARFABallActor* Ball = FindKickableBall();
     if (!Ball)
     {
@@ -204,6 +220,7 @@ void ARFAPlayerCharacter::ApplyBallAction(float Strength, float Lift)
     FVector Direction = GetAimDirection();
     Direction.Z = Lift;
     Ball->ApplyKick(Direction, Strength, this);
+    BallActionCooldownRemaining = BallActionCooldown;
 }
 
 ARFABallActor* ARFAPlayerCharacter::FindKickableBall() const
@@ -220,6 +237,10 @@ ARFABallActor* ARFAPlayerCharacter::FindKickableBall() const
 
     TArray<FOverlapResult> Overlaps;
     GetWorld()->OverlapMultiByObjectType(Overlaps, SearchLocation, FQuat::Identity, ObjectQueryParams, SearchShape);
+    if (Overlaps.IsEmpty())
+    {
+        GetWorld()->OverlapMultiByObjectType(Overlaps, GetActorLocation(), FQuat::Identity, ObjectQueryParams, SearchShape);
+    }
 
     ARFABallActor* BestBall = nullptr;
     float BestDistanceSquared = TNumericLimits<float>::Max();
