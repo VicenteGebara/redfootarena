@@ -19,7 +19,9 @@ Saved/
 .vs/
 .vscode/
 .idea/
+.vsconfig
 *.sln
+*.slnx
 *.suo
 *.user
 *.userosscache
