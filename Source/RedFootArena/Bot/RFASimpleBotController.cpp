@@ -2,6 +2,7 @@
 #include "Ball/RFABallActor.h"
 #include "EngineUtils.h"
 #include "GameFramework/Pawn.h"
+#include "Match/RFAMatchManager.h"
 
 ARFASimpleBotController::ARFASimpleBotController()
 {
@@ -14,6 +15,11 @@ void ARFASimpleBotController::Tick(float DeltaSeconds)
 
     APawn* ControlledPawn = GetPawn();
     if (!ControlledPawn)
+    {
+        return;
+    }
+
+    if (!CanPlayBall())
     {
         return;
     }
@@ -58,6 +64,21 @@ void ARFASimpleBotController::Tick(float DeltaSeconds)
     KickDirection.Z = 0.08f;
     CachedBall->ApplyKick(KickDirection, KickImpulse, ControlledPawn);
     KickCooldownRemaining = KickCooldownSeconds;
+}
+
+bool ARFASimpleBotController::CanPlayBall() const
+{
+    if (!GetWorld())
+    {
+        return false;
+    }
+
+    for (TActorIterator<ARFAMatchManager> It(GetWorld()); It; ++It)
+    {
+        return It->IsMatchActive();
+    }
+
+    return true;
 }
 
 ARFABallActor* ARFASimpleBotController::FindBall() const

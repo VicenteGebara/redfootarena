@@ -6,6 +6,7 @@
 #include "RFASimpleBotController.generated.h"
 
 class ARFABallActor;
+class ARFAMatchManager;
 
 UCLASS()
 class REDFOOTARENA_API ARFASimpleBotController : public AAIController
@@ -40,6 +41,7 @@ protected:
     float AttackGoalX = -1980.0f;
 
 private:
+    bool CanPlayBall() const;
     ARFABallActor* FindBall() const;
     FVector GetAttackTarget() const;
     FVector GetApproachLocation() const;

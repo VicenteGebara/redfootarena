@@ -59,6 +59,10 @@ void ARFAHUD::DrawMatchStatus(const ARFAMatchManager& MatchManager)
         const TCHAR* TeamName = MatchManager.GetLastScoringTeam() == ERedFootTeam::Home ? TEXT("Home") : TEXT("Away");
         StatusText = FString::Printf(TEXT("Goal %s  |  Restart %.1fs"), TeamName, MatchManager.GetRestartRemainingTime());
     }
+    else if (MatchManager.IsWaitingForKickoff())
+    {
+        StatusText = FString::Printf(TEXT("Kickoff %.1fs"), MatchManager.GetKickoffRemainingTime());
+    }
     else if (MatchManager.IsMatchFinished())
     {
         if (MatchManager.IsMatchTied())

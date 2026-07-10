@@ -28,6 +28,18 @@ Latest MVP loop improvements:
 - colored player and opponent bodies;
 - small kick/pass cooldown for more predictable ball control;
 - bot approach logic that tries to line up behind the ball before shooting.
+- kickoff delay before play starts or restarts;
+- automatic ball recovery when it falls or leaves the playable area;
+- manual play reset for quick local testing.
+
+Current test controls:
+
+- WASD: move;
+- Mouse: camera;
+- Left Shift: sprint;
+- Space or left mouse button: kick;
+- E or right mouse button: pass;
+- R: reset the current play to kickoff.
 
 Out of scope for now:
 

@@ -35,6 +35,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Match")
     void StartMatch();
 
+    UFUNCTION(BlueprintCallable, Category = "Match")
+    void ResetPlayToKickoff();
+
     UFUNCTION(BlueprintPure, Category = "Match")
     float GetRemainingTime() const { return RemainingTimeSeconds; }
 
@@ -46,6 +49,9 @@ public:
 
     UFUNCTION(BlueprintPure, Category = "Match")
     bool IsWaitingForRestart() const { return bWaitingForRestart; }
+
+    UFUNCTION(BlueprintPure, Category = "Match")
+    bool IsWaitingForKickoff() const { return bWaitingForKickoff; }
 
     UFUNCTION(BlueprintPure, Category = "Match")
     bool IsMatchFinished() const { return bMatchFinished; }
@@ -66,6 +72,9 @@ public:
     float GetRestartRemainingTime() const;
 
     UFUNCTION(BlueprintPure, Category = "Match")
+    float GetKickoffRemainingTime() const;
+
+    UFUNCTION(BlueprintPure, Category = "Match")
     ARFAScoreManager* GetScoreManager() const { return ScoreManager; }
 
     UPROPERTY(BlueprintAssignable, Category = "Match")
@@ -83,6 +92,8 @@ protected:
 
     void ResetAfterGoal();
     void ResetRegisteredActors();
+    void QueueKickoff();
+    void CheckBallRecovery();
     void EndMatch();
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Match")
@@ -90,6 +101,15 @@ protected:
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Match")
     float GoalResetDelay = 1.5f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Match")
+    float KickoffDelay = 1.0f;
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Match|Recovery")
+    FVector2D BallRecoveryHalfExtent = FVector2D(2600.0f, 1600.0f);
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Match|Recovery")
+    float BallRecoveryMinZ = -260.0f;
 
 private:
     UPROPERTY()
@@ -108,6 +128,7 @@ private:
     TArray<FTransform> ResetTransforms;
 
     FTimerHandle GoalResetTimerHandle;
+    FTimerHandle KickoffTimerHandle;
 
     FVector BallSpawnLocation = FVector::ZeroVector;
     float RemainingTimeSeconds = 0.0f;
@@ -115,6 +136,7 @@ private:
     ERedFootTeam WinningTeam = ERedFootTeam::Home;
     bool bMatchActive = false;
     bool bWaitingForRestart = false;
+    bool bWaitingForKickoff = false;
     bool bMatchFinished = false;
     bool bHasScoringTeam = false;
 };

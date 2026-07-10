@@ -7,10 +7,12 @@
 #include "Components/RFAStaminaComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/OverlapResult.h"
+#include "EngineUtils.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
+#include "Match/RFAMatchManager.h"
 #include "UObject/ConstructorHelpers.h"
 
 ARFAPlayerCharacter::ARFAPlayerCharacter()
@@ -103,6 +105,7 @@ void ARFAPlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInput
     PlayerInputComponent->BindAction(TEXT("Sprint"), IE_Released, this, &ARFAPlayerCharacter::StopSprint);
     PlayerInputComponent->BindAction(TEXT("Kick"), IE_Pressed, this, &ARFAPlayerCharacter::KickBall);
     PlayerInputComponent->BindAction(TEXT("Pass"), IE_Pressed, this, &ARFAPlayerCharacter::PassBall);
+    PlayerInputComponent->BindAction(TEXT("ResetPlay"), IE_Pressed, this, &ARFAPlayerCharacter::RequestPlayReset);
 }
 
 FVector ARFAPlayerCharacter::GetAimDirection() const
@@ -134,6 +137,20 @@ void ARFAPlayerCharacter::PassBall()
     }
 
     ApplyBallAction(StatsComponent->GetPassPower(), PassLift);
+}
+
+void ARFAPlayerCharacter::RequestPlayReset()
+{
+    if (!GetWorld())
+    {
+        return;
+    }
+
+    for (TActorIterator<ARFAMatchManager> It(GetWorld()); It; ++It)
+    {
+        It->ResetPlayToKickoff();
+        return;
+    }
 }
 
 void ARFAPlayerCharacter::ResetArcadeVelocity()
@@ -206,6 +223,21 @@ void ARFAPlayerCharacter::StopSprint()
 
 void ARFAPlayerCharacter::ApplyBallAction(float Strength, float Lift)
 {
+    if (!GetWorld())
+    {
+        return;
+    }
+
+    for (TActorIterator<ARFAMatchManager> It(GetWorld()); It; ++It)
+    {
+        if (!It->IsMatchActive())
+        {
+            return;
+        }
+
+        break;
+    }
+
     if (BallActionCooldownRemaining > 0.0f)
     {
         return;

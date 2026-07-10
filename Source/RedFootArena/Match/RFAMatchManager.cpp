@@ -15,7 +15,13 @@ void ARFAMatchManager::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
-    if (!bMatchActive || bWaitingForRestart)
+    if (!bMatchActive || bWaitingForRestart || bWaitingForKickoff || bMatchFinished)
+    {
+        return;
+    }
+
+    CheckBallRecovery();
+    if (!bMatchActive)
     {
         return;
     }
@@ -36,6 +42,7 @@ void ARFAMatchManager::InitializeMatch(ARFAScoreManager* InScoreManager, ARFABal
     bMatchFinished = false;
     bHasScoringTeam = false;
     bWaitingForRestart = false;
+    bWaitingForKickoff = false;
 
     if (ScoreManager)
     {
@@ -47,7 +54,7 @@ void ARFAMatchManager::InitializeMatch(ARFAScoreManager* InScoreManager, ARFABal
         Ball->ResetBall(BallSpawnLocation);
     }
 
-    StartMatch();
+    QueueKickoff();
 }
 
 void ARFAMatchManager::RegisterGoal(ARFAGoalActor* Goal)
@@ -75,8 +82,28 @@ void ARFAMatchManager::RegisterResetActor(AActor* Actor, const FTransform& Reset
 void ARFAMatchManager::StartMatch()
 {
     bWaitingForRestart = false;
+    bWaitingForKickoff = false;
     bMatchActive = RemainingTimeSeconds > 0.0f;
     OnMatchStarted.Broadcast();
+}
+
+void ARFAMatchManager::ResetPlayToKickoff()
+{
+    if (bMatchFinished)
+    {
+        return;
+    }
+
+    GetWorldTimerManager().ClearTimer(GoalResetTimerHandle);
+    GetWorldTimerManager().ClearTimer(KickoffTimerHandle);
+
+    if (Ball)
+    {
+        Ball->ResetBall(BallSpawnLocation);
+    }
+
+    ResetRegisteredActors();
+    QueueKickoff();
 }
 
 float ARFAMatchManager::GetRestartRemainingTime() const
@@ -89,6 +116,16 @@ float ARFAMatchManager::GetRestartRemainingTime() const
     return FMath::Max(0.0f, GetWorld()->GetTimerManager().GetTimerRemaining(GoalResetTimerHandle));
 }
 
+float ARFAMatchManager::GetKickoffRemainingTime() const
+{
+    if (!bWaitingForKickoff || !GetWorld())
+    {
+        return 0.0f;
+    }
+
+    return FMath::Max(0.0f, GetWorld()->GetTimerManager().GetTimerRemaining(KickoffTimerHandle));
+}
+
 bool ARFAMatchManager::IsMatchTied() const
 {
     return ScoreManager && ScoreManager->GetHomeScore() == ScoreManager->GetAwayScore();
@@ -96,7 +133,7 @@ bool ARFAMatchManager::IsMatchTied() const
 
 void ARFAMatchManager::HandleGoalScored(ERedFootTeam ScoringTeam, ARFAGoalActor* Goal, ARFABallActor* ScoredBall)
 {
-    if (bWaitingForRestart || !bMatchActive)
+    if (bWaitingForRestart || bWaitingForKickoff || !bMatchActive)
     {
         return;
     }
@@ -121,13 +158,7 @@ void ARFAMatchManager::HandleGoalScored(ERedFootTeam ScoringTeam, ARFAGoalActor*
 
 void ARFAMatchManager::ResetAfterGoal()
 {
-    if (Ball)
-    {
-        Ball->ResetBall(BallSpawnLocation);
-    }
-
-    ResetRegisteredActors();
-    StartMatch();
+    ResetPlayToKickoff();
 }
 
 void ARFAMatchManager::ResetRegisteredActors()
@@ -157,10 +188,48 @@ void ARFAMatchManager::ResetRegisteredActors()
     }
 }
 
+void ARFAMatchManager::QueueKickoff()
+{
+    bMatchActive = false;
+    bWaitingForRestart = false;
+    bWaitingForKickoff = true;
+
+    if (Ball)
+    {
+        Ball->StopBall();
+    }
+
+    GetWorldTimerManager().SetTimer(KickoffTimerHandle, this, &ARFAMatchManager::StartMatch, KickoffDelay, false);
+}
+
+void ARFAMatchManager::CheckBallRecovery()
+{
+    if (!Ball)
+    {
+        return;
+    }
+
+    const FVector BallLocation = Ball->GetActorLocation();
+    const bool bOutOfBounds =
+        FMath::Abs(BallLocation.X) > BallRecoveryHalfExtent.X ||
+        FMath::Abs(BallLocation.Y) > BallRecoveryHalfExtent.Y ||
+        BallLocation.Z < BallRecoveryMinZ;
+
+    if (bOutOfBounds)
+    {
+        ResetPlayToKickoff();
+    }
+}
+
 void ARFAMatchManager::EndMatch()
 {
     bMatchActive = false;
+    bWaitingForKickoff = false;
+    bWaitingForRestart = false;
     bMatchFinished = true;
+
+    GetWorldTimerManager().ClearTimer(GoalResetTimerHandle);
+    GetWorldTimerManager().ClearTimer(KickoffTimerHandle);
 
     WinningTeam = ERedFootTeam::Home;
     if (ScoreManager && ScoreManager->GetAwayScore() > ScoreManager->GetHomeScore())

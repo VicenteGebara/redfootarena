@@ -34,6 +34,9 @@ public:
     void PassBall();
 
     UFUNCTION(BlueprintCallable, Category = "Player")
+    void RequestPlayReset();
+
+    UFUNCTION(BlueprintCallable, Category = "Player")
     void ResetArcadeVelocity();
 
     UFUNCTION(BlueprintPure, Category = "Player")
