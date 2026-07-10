@@ -32,6 +32,14 @@ Latest MVP loop improvements:
 - automatic ball recovery when it falls or leaves the playable area;
 - manual play reset for quick local testing.
 
+Latest visual pass:
+
+- procedural player bodies now include head, team ring and forward marker;
+- home and away colors are more distinct on players and goals;
+- ball has simple arcade stripe details;
+- match lighting and third-person camera were tuned for better readability;
+- arena remains fully procedural while looking more like a playable test court.
+
 Current test controls:
 
 - WASD: move;

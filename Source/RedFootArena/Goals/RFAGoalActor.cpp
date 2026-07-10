@@ -3,6 +3,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/SceneComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Materials/MaterialInstanceDynamic.h"
 #include "UObject/ConstructorHelpers.h"
 
 ARFAGoalActor::ARFAGoalActor()
@@ -58,6 +59,21 @@ void ARFAGoalActor::ConfigureGoal(ERedFootTeam InDefendingTeam, float InGoalWidt
 
     Crossbar->SetRelativeLocation(FVector(0.0f, 0.0f, InGoalHeight));
     Crossbar->SetRelativeScale3D(FVector(InGoalDepth / 100.0f, (InGoalWidth + PostThickness) / 100.0f, PostThickness / 100.0f));
+
+    const FLinearColor GoalColor = DefendingTeam == ERedFootTeam::Home
+        ? FLinearColor(0.95f, 0.12f, 0.08f, 1.0f)
+        : FLinearColor(0.08f, 0.38f, 1.0f, 1.0f);
+
+    for (UStaticMeshComponent* GoalPiece : { LeftPost, RightPost, Crossbar })
+    {
+        if (GoalPiece)
+        {
+            if (UMaterialInstanceDynamic* DynamicMaterial = GoalPiece->CreateAndSetMaterialInstanceDynamic(0))
+            {
+                DynamicMaterial->SetVectorParameterValue(TEXT("Color"), GoalColor);
+            }
+        }
+    }
 }
 
 void ARFAGoalActor::HandleGoalOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

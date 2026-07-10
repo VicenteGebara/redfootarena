@@ -7,6 +7,10 @@
 #include "Match/RFAScoreManager.h"
 #include "Player/RFAPlayerCharacter.h"
 #include "UI/RFAHUD.h"
+#include "Components/DirectionalLightComponent.h"
+#include "Components/SkyLightComponent.h"
+#include "Engine/DirectionalLight.h"
+#include "Engine/SkyLight.h"
 #include "GameFramework/PlayerController.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -37,6 +41,8 @@ void ARFAGameMode::InitializeOfflineMatch()
         return;
     }
 
+    BuildVisualEnvironment(World);
+
     ArenaManager = World->SpawnActor<ARFAArenaManager>(ArenaManagerClass, FVector::ZeroVector, FRotator::ZeroRotator);
     if (!ArenaManager)
     {
@@ -66,6 +72,28 @@ void ARFAGameMode::InitializeOfflineMatch()
 
     MatchManager->RegisterResetActor(PlayerPawn, ArenaManager->GetHomePlayerSpawnTransform());
     MatchManager->RegisterResetActor(BotPawn, ArenaManager->GetAwayPlayerSpawnTransform());
+}
+
+void ARFAGameMode::BuildVisualEnvironment(UWorld* World) const
+{
+    if (!World)
+    {
+        return;
+    }
+
+    ADirectionalLight* KeyLight = World->SpawnActor<ADirectionalLight>(FVector(-900.0f, -650.0f, 1400.0f), FRotator(-42.0f, -28.0f, 0.0f));
+    if (KeyLight && KeyLight->GetLightComponent())
+    {
+        KeyLight->GetLightComponent()->SetIntensity(3.2f);
+        KeyLight->GetLightComponent()->SetLightColor(FLinearColor(1.0f, 0.94f, 0.82f, 1.0f));
+    }
+
+    ASkyLight* FillLight = World->SpawnActor<ASkyLight>(FVector::ZeroVector, FRotator::ZeroRotator);
+    if (FillLight && FillLight->GetLightComponent())
+    {
+        FillLight->GetLightComponent()->SetIntensity(0.65f);
+        FillLight->GetLightComponent()->SetLightColor(FLinearColor(0.72f, 0.82f, 1.0f, 1.0f));
+    }
 }
 
 APawn* ARFAGameMode::EnsurePlayerPawn(const FTransform& SpawnTransform)

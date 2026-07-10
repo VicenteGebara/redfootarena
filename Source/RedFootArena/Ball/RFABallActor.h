@@ -27,10 +27,20 @@ public:
     UStaticMeshComponent* GetBallMesh() const { return BallMesh; }
 
 protected:
+    virtual void BeginPlay() override;
+
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ball")
     UStaticMeshComponent* BallMesh;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ball")
+    UStaticMeshComponent* StripeMeshX;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ball")
+    UStaticMeshComponent* StripeMeshY;
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Ball")
     float MaxSpeed = 2800.0f;
-};
 
+private:
+    void ApplyVisualColor(UStaticMeshComponent* MeshComponent, const FLinearColor& Color) const;
+};

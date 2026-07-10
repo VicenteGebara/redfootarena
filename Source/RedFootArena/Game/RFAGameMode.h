@@ -42,6 +42,7 @@ protected:
 
 private:
     void InitializeOfflineMatch();
+    void BuildVisualEnvironment(UWorld* World) const;
     APawn* EnsurePlayerPawn(const FTransform& SpawnTransform);
     APawn* SpawnBotPawn(const FTransform& SpawnTransform);
 
@@ -57,4 +58,3 @@ private:
     UPROPERTY()
     ARFABallActor* Ball;
 };
-

@@ -65,8 +65,20 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Visual")
     UStaticMeshComponent* BodyMesh;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Visual")
+    UStaticMeshComponent* HeadMesh;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Visual")
+    UStaticMeshComponent* TeamRingMesh;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Visual")
+    UStaticMeshComponent* ForwardMarkerMesh;
+
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Visual")
     FLinearColor BodyColor = FLinearColor(0.9f, 0.12f, 0.1f, 1.0f);
+
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Visual")
+    FLinearColor AccentColor = FLinearColor(1.0f, 0.82f, 0.22f, 1.0f);
 
     UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
     URFAStaminaComponent* StaminaComponent;
@@ -90,5 +102,7 @@ protected:
     float BallActionCooldown = 0.18f;
 
 private:
+    void ApplyVisualColor(UStaticMeshComponent* MeshComponent, const FLinearColor& Color) const;
+
     float BallActionCooldownRemaining = 0.0f;
 };

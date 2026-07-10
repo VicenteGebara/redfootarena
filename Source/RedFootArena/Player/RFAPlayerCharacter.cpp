@@ -34,13 +34,14 @@ ARFAPlayerCharacter::ARFAPlayerCharacter()
 
     CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
     CameraBoom->SetupAttachment(RootComponent);
-    CameraBoom->TargetArmLength = 460.0f;
-    CameraBoom->SocketOffset = FVector(0.0f, 75.0f, 85.0f);
+    CameraBoom->TargetArmLength = 540.0f;
+    CameraBoom->SocketOffset = FVector(0.0f, 85.0f, 120.0f);
     CameraBoom->bUsePawnControlRotation = true;
 
     FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
     FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
     FollowCamera->bUsePawnControlRotation = false;
+    FollowCamera->SetFieldOfView(82.0f);
 
     BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BodyMesh"));
     BodyMesh->SetupAttachment(RootComponent);
@@ -48,10 +49,41 @@ ARFAPlayerCharacter::ARFAPlayerCharacter()
     BodyMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -35.0f));
     BodyMesh->SetRelativeScale3D(FVector(0.55f, 0.55f, 1.45f));
 
+    HeadMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HeadMesh"));
+    HeadMesh->SetupAttachment(RootComponent);
+    HeadMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    HeadMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 54.0f));
+    HeadMesh->SetRelativeScale3D(FVector(0.32f));
+
+    TeamRingMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TeamRingMesh"));
+    TeamRingMesh->SetupAttachment(RootComponent);
+    TeamRingMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    TeamRingMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -92.0f));
+    TeamRingMesh->SetRelativeScale3D(FVector(0.95f, 0.95f, 0.04f));
+
+    ForwardMarkerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ForwardMarkerMesh"));
+    ForwardMarkerMesh->SetupAttachment(RootComponent);
+    ForwardMarkerMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    ForwardMarkerMesh->SetRelativeLocation(FVector(58.0f, 0.0f, -72.0f));
+    ForwardMarkerMesh->SetRelativeScale3D(FVector(0.72f, 0.16f, 0.06f));
+
     static ConstructorHelpers::FObjectFinder<UStaticMesh> BodyAsset(TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
     if (BodyAsset.Succeeded())
     {
         BodyMesh->SetStaticMesh(BodyAsset.Object);
+        TeamRingMesh->SetStaticMesh(BodyAsset.Object);
+    }
+
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> HeadAsset(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+    if (HeadAsset.Succeeded())
+    {
+        HeadMesh->SetStaticMesh(HeadAsset.Object);
+    }
+
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> MarkerAsset(TEXT("/Engine/BasicShapes/Cube.Cube"));
+    if (MarkerAsset.Succeeded())
+    {
+        ForwardMarkerMesh->SetStaticMesh(MarkerAsset.Object);
     }
 
     StaminaComponent = CreateDefaultSubobject<URFAStaminaComponent>(TEXT("StaminaComponent"));
@@ -67,13 +99,10 @@ void ARFAPlayerCharacter::BeginPlay()
         StaminaComponent->SetMaxStamina(StatsComponent->GetMaxStamina());
     }
 
-    if (BodyMesh)
-    {
-        if (UMaterialInstanceDynamic* DynamicMaterial = BodyMesh->CreateAndSetMaterialInstanceDynamic(0))
-        {
-            DynamicMaterial->SetVectorParameterValue(TEXT("Color"), BodyColor);
-        }
-    }
+    ApplyVisualColor(BodyMesh, BodyColor);
+    ApplyVisualColor(HeadMesh, FLinearColor(0.98f, 0.78f, 0.56f, 1.0f));
+    ApplyVisualColor(TeamRingMesh, AccentColor);
+    ApplyVisualColor(ForwardMarkerMesh, AccentColor);
 }
 
 void ARFAPlayerCharacter::Tick(float DeltaSeconds)
@@ -293,4 +322,17 @@ ARFABallActor* ARFAPlayerCharacter::FindKickableBall() const
     }
 
     return BestBall;
+}
+
+void ARFAPlayerCharacter::ApplyVisualColor(UStaticMeshComponent* MeshComponent, const FLinearColor& Color) const
+{
+    if (!MeshComponent)
+    {
+        return;
+    }
+
+    if (UMaterialInstanceDynamic* DynamicMaterial = MeshComponent->CreateAndSetMaterialInstanceDynamic(0))
+    {
+        DynamicMaterial->SetVectorParameterValue(TEXT("Color"), Color);
+    }
 }
