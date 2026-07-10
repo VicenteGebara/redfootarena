@@ -8,6 +8,7 @@ Current focus: offline MVP only.
 
 - Unreal Engine 5.8.
 - Visual Studio 2022 Build Tools with the C++ toolchain.
+- Microsoft Visual C++ Redistributable 2015-2022 (x64), version 14.50.35719.0 or newer.
 - Windows SDK 10.0.19041.0 or newer.
 
 Implemented architecture:

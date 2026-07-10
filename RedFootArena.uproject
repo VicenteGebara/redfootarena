@@ -1,22 +1,19 @@
 {
-  "FileVersion": 3,
-  "EngineAssociation": "{F9DE017D-4BDF-DCFB-09A7-7CACC7708FE1}",
-  "Version": 1,
-  "VersionName": "0.1.0",
-  "FriendlyName": "RedFoot Arena",
-  "Description": "Arcade 3D football arena game focused on a fast offline MVP.",
-  "Category": "Games",
-  "Plugins": [
-    {
-      "Name": "AndroidFileServer",
-      "Enabled": false
-    }
-  ],
-  "Modules": [
-    {
-      "Name": "RedFootArena",
-      "Type": "Runtime",
-      "LoadingPhase": "Default"
-    }
-  ]
+	"FileVersion": 3,
+	"EngineAssociation": "{F3138B3B-4692-CB87-C4E8-6889B4B65F8A}",
+	"Category": "Games",
+	"Description": "Arcade 3D football arena game focused on a fast offline MVP.",
+	"Modules": [
+		{
+			"Name": "RedFootArena",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	],
+	"Plugins": [
+		{
+			"Name": "AndroidFileServer",
+			"Enabled": false
+		}
+	]
 }
