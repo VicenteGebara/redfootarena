@@ -40,6 +40,14 @@ Latest visual pass:
 - match lighting and third-person camera were tuned for better readability;
 - arena remains fully procedural while looking more like a playable test court.
 
+Latest asset pass:
+
+- selected free CC0 models from Kenney were downloaded and organized;
+- imported Unreal assets live under `Content/External/Kenney`;
+- source FBX files and license files live under `ExternalAssets/Kenney`;
+- arena now uses optional decorative props such as banners, columns, gates, trophies and team flags;
+- asset origins and licenses are documented in `Docs/ThirdPartyAssets.md`.
+
 Latest audio pass:
 
 - basic kick and pass feedback sounds;

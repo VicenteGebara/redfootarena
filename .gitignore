@@ -41,3 +41,5 @@ Builds/
 Windows/
 WindowsNoEditor/
 
+# Downloaded source archives
+ExternalAssets/**/*.zip

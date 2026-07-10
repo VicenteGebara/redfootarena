@@ -38,7 +38,6 @@ ARFABallActor::ARFABallActor()
     BallMesh->SetEnableGravity(true);
     BallMesh->SetLinearDamping(0.45f);
     BallMesh->SetAngularDamping(0.35f);
-    BallMesh->SetMassOverrideInKg(NAME_None, 0.45f, true);
     BallMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     BallMesh->SetCollisionObjectType(ECC_PhysicsBody);
     BallMesh->SetCollisionResponseToAllChannels(ECR_Block);
@@ -49,6 +48,11 @@ ARFABallActor::ARFABallActor()
 void ARFABallActor::BeginPlay()
 {
     Super::BeginPlay();
+
+    if (BallMesh)
+    {
+        BallMesh->SetMassOverrideInKg(NAME_None, 0.45f, true);
+    }
 
     ApplyVisualColor(BallMesh, FLinearColor(0.96f, 0.96f, 0.9f, 1.0f));
     ApplyVisualColor(StripeMeshX, FLinearColor(0.9f, 0.06f, 0.04f, 1.0f));

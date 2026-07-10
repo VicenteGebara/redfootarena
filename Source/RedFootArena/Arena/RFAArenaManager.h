@@ -59,6 +59,8 @@ protected:
 
 private:
     UStaticMeshComponent* CreateArenaPiece(const FString& Name, const FVector& Location, const FVector& Size, bool bBlocksMovement = true, const FLinearColor& Color = FLinearColor::White);
+    UStaticMeshComponent* CreateDecorativeProp(const FString& Name, UStaticMesh* Mesh, const FVector& Location, const FRotator& Rotation, const FVector& Scale);
+    void BuildDecorativeProps(float HalfLength, float HalfWidth);
     ARFAGoalActor* SpawnGoal(float XSign);
 
     UPROPERTY()
@@ -66,6 +68,24 @@ private:
 
     UPROPERTY()
     UStaticMesh* CubeMesh;
+
+    UPROPERTY()
+    UStaticMesh* BannerMesh;
+
+    UPROPERTY()
+    UStaticMesh* ColumnMesh;
+
+    UPROPERTY()
+    UStaticMesh* TrophyMesh;
+
+    UPROPERTY()
+    UStaticMesh* GateMesh;
+
+    UPROPERTY()
+    UStaticMesh* RedFlagMesh;
+
+    UPROPERTY()
+    UStaticMesh* BlueFlagMesh;
 
     UPROPERTY()
     TArray<UStaticMeshComponent*> ArenaPieces;

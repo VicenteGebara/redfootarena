@@ -19,6 +19,42 @@ ARFAArenaManager::ARFAArenaManager()
         CubeMesh = CubeAsset.Object;
     }
 
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> BannerAsset(TEXT("/Game/External/Kenney/MiniArena/banner.banner"));
+    if (BannerAsset.Succeeded())
+    {
+        BannerMesh = BannerAsset.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> ColumnAsset(TEXT("/Game/External/Kenney/MiniArena/column.column"));
+    if (ColumnAsset.Succeeded())
+    {
+        ColumnMesh = ColumnAsset.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> TrophyAsset(TEXT("/Game/External/Kenney/MiniArena/trophy.trophy"));
+    if (TrophyAsset.Succeeded())
+    {
+        TrophyMesh = TrophyAsset.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> GateAsset(TEXT("/Game/External/Kenney/MiniArena/wall-gate.wall-gate"));
+    if (GateAsset.Succeeded())
+    {
+        GateMesh = GateAsset.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> RedFlagAsset(TEXT("/Game/External/Kenney/MinigolfKit/flag-large-red.flag-large-red"));
+    if (RedFlagAsset.Succeeded())
+    {
+        RedFlagMesh = RedFlagAsset.Object;
+    }
+
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> BlueFlagAsset(TEXT("/Game/External/Kenney/MinigolfKit/flag-large-blue.flag-large-blue"));
+    if (BlueFlagAsset.Succeeded())
+    {
+        BlueFlagMesh = BlueFlagAsset.Object;
+    }
+
     GoalActorClass = ARFAGoalActor::StaticClass();
 }
 
@@ -51,6 +87,8 @@ void ARFAArenaManager::BuildArena()
 
     CreateArenaPiece(TEXT("HomeGoalBackWall"), FVector(-HalfLength - GoalDepth, 0.0f, WallHeight * 0.5f), FVector(WallThickness, GoalWidth, WallHeight), true, HomeGoalColor);
     CreateArenaPiece(TEXT("AwayGoalBackWall"), FVector(HalfLength + GoalDepth, 0.0f, WallHeight * 0.5f), FVector(WallThickness, GoalWidth, WallHeight), true, AwayGoalColor);
+
+    BuildDecorativeProps(HalfLength, HalfWidth);
 
     SpawnedGoals.Reset();
     SpawnedGoals.Add(SpawnGoal(-1.0f));
@@ -98,6 +136,55 @@ UStaticMeshComponent* ARFAArenaManager::CreateArenaPiece(const FString& Name, co
 
     ArenaPieces.Add(Piece);
     return Piece;
+}
+
+UStaticMeshComponent* ARFAArenaManager::CreateDecorativeProp(const FString& Name, UStaticMesh* Mesh, const FVector& Location, const FRotator& Rotation, const FVector& Scale)
+{
+    if (!Mesh)
+    {
+        return nullptr;
+    }
+
+    const FName ComponentName = MakeUniqueObjectName(this, UStaticMeshComponent::StaticClass(), FName(*Name));
+    UStaticMeshComponent* Prop = NewObject<UStaticMeshComponent>(this, ComponentName);
+    Prop->SetStaticMesh(Mesh);
+    Prop->SetMobility(EComponentMobility::Static);
+    Prop->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    Prop->AttachToComponent(SceneRoot, FAttachmentTransformRules::KeepRelativeTransform);
+    Prop->SetRelativeLocation(Location);
+    Prop->SetRelativeRotation(Rotation);
+    Prop->SetRelativeScale3D(Scale);
+    AddInstanceComponent(Prop);
+    Prop->RegisterComponent();
+
+    ArenaPieces.Add(Prop);
+    return Prop;
+}
+
+void ARFAArenaManager::BuildDecorativeProps(float HalfLength, float HalfWidth)
+{
+    const float CornerX = HalfLength - 170.0f;
+    const float CornerY = HalfWidth - 120.0f;
+    const float FlagY = GoalWidth * 0.5f + 95.0f;
+
+    CreateDecorativeProp(TEXT("HomeLeftColumn"), ColumnMesh, FVector(-CornerX, -CornerY, 0.0f), FRotator::ZeroRotator, FVector(1.35f));
+    CreateDecorativeProp(TEXT("HomeRightColumn"), ColumnMesh, FVector(-CornerX, CornerY, 0.0f), FRotator::ZeroRotator, FVector(1.35f));
+    CreateDecorativeProp(TEXT("AwayLeftColumn"), ColumnMesh, FVector(CornerX, -CornerY, 0.0f), FRotator::ZeroRotator, FVector(1.35f));
+    CreateDecorativeProp(TEXT("AwayRightColumn"), ColumnMesh, FVector(CornerX, CornerY, 0.0f), FRotator::ZeroRotator, FVector(1.35f));
+
+    CreateDecorativeProp(TEXT("LeftBanner"), BannerMesh, FVector(0.0f, -HalfWidth + 12.0f, WallHeight * 0.62f), FRotator(0.0f, 90.0f, 0.0f), FVector(1.6f));
+    CreateDecorativeProp(TEXT("RightBanner"), BannerMesh, FVector(0.0f, HalfWidth - 12.0f, WallHeight * 0.62f), FRotator(0.0f, -90.0f, 0.0f), FVector(1.6f));
+
+    CreateDecorativeProp(TEXT("HomeGate"), GateMesh, FVector(-HalfLength - GoalDepth - 38.0f, 0.0f, 0.0f), FRotator(0.0f, 90.0f, 0.0f), FVector(1.35f));
+    CreateDecorativeProp(TEXT("AwayGate"), GateMesh, FVector(HalfLength + GoalDepth + 38.0f, 0.0f, 0.0f), FRotator(0.0f, -90.0f, 0.0f), FVector(1.35f));
+
+    CreateDecorativeProp(TEXT("HomeTrophy"), TrophyMesh, FVector(-HalfLength - GoalDepth - 115.0f, 0.0f, 18.0f), FRotator(0.0f, 90.0f, 0.0f), FVector(1.15f));
+    CreateDecorativeProp(TEXT("AwayTrophy"), TrophyMesh, FVector(HalfLength + GoalDepth + 115.0f, 0.0f, 18.0f), FRotator(0.0f, -90.0f, 0.0f), FVector(1.15f));
+
+    CreateDecorativeProp(TEXT("HomeFlagLeft"), RedFlagMesh, FVector(-HalfLength - 35.0f, -FlagY, 0.0f), FRotator(0.0f, 90.0f, 0.0f), FVector(1.15f));
+    CreateDecorativeProp(TEXT("HomeFlagRight"), RedFlagMesh, FVector(-HalfLength - 35.0f, FlagY, 0.0f), FRotator(0.0f, 90.0f, 0.0f), FVector(1.15f));
+    CreateDecorativeProp(TEXT("AwayFlagLeft"), BlueFlagMesh, FVector(HalfLength + 35.0f, -FlagY, 0.0f), FRotator(0.0f, -90.0f, 0.0f), FVector(1.15f));
+    CreateDecorativeProp(TEXT("AwayFlagRight"), BlueFlagMesh, FVector(HalfLength + 35.0f, FlagY, 0.0f), FRotator(0.0f, -90.0f, 0.0f), FVector(1.15f));
 }
 
 ARFAGoalActor* ARFAArenaManager::SpawnGoal(float XSign)
