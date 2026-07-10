@@ -1,5 +1,6 @@
 {
   "FileVersion": 3,
+  "EngineAssociation": "5.8",
   "Version": 1,
   "VersionName": "0.1.0",
   "FriendlyName": "RedFoot Arena",
@@ -13,4 +14,3 @@
     }
   ]
 }
-
