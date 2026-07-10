@@ -45,14 +45,18 @@ Latest asset pass:
 - selected free CC0 models from Kenney were downloaded and organized;
 - imported Unreal assets live under `Content/External/Kenney`;
 - source FBX files and license files live under `ExternalAssets/Kenney`;
-- arena now uses optional decorative props such as banners, columns, gates, trophies and team flags;
+- arena now uses a focused street-football look without unrelated decorative props;
 - asset origins and licenses are documented in `Docs/ThirdPartyAssets.md`.
+- player and opponent now use the imported human skeletal characters instead of procedural cylinders;
+- asphalt, brick walls, touch lines and penalty-area markings improve arena readability;
+- goals use cylindrical posts and crossbars with physical collision.
 
 Latest audio pass:
 
 - basic kick and pass feedback sounds;
 - goal, kickoff, reset and match-end audio cues;
 - sounds use engine-provided assets for now, so no manual import step is needed.
+- harsh white-noise playback was removed from kick and goal feedback.
 
 Current test controls:
 

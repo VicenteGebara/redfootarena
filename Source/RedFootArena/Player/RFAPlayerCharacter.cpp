@@ -7,6 +7,8 @@
 #include "Components/RFAPlayerStatsComponent.h"
 #include "Components/RFAStaminaComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Engine/SkeletalMesh.h"
 #include "Engine/OverlapResult.h"
 #include "EngineUtils.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -44,15 +46,31 @@ ARFAPlayerCharacter::ARFAPlayerCharacter()
     FollowCamera->bUsePawnControlRotation = false;
     FollowCamera->SetFieldOfView(82.0f);
 
+    // The imported Kenney character is the visible player. The inherited
+    // skeletal mesh also gives us a clean path to add animations later.
+    static ConstructorHelpers::FObjectFinder<USkeletalMesh> HumanAsset(
+        TEXT("/Game/External/Kenney/MiniCharacters/character-male-a.character-male-a"));
+    if (HumanAsset.Succeeded())
+    {
+        GetMesh()->SetSkeletalMesh(HumanAsset.Object);
+        GetMesh()->SetRelativeLocation(FVector(0.0f, 0.0f, -96.0f));
+        GetMesh()->SetRelativeRotation(FRotator(0.0f, -90.0f, 0.0f));
+        GetMesh()->SetRelativeScale3D(FVector(1.0f));
+        GetMesh()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+        GetMesh()->SetCastShadow(true);
+    }
+
     BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BodyMesh"));
     BodyMesh->SetupAttachment(RootComponent);
     BodyMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    BodyMesh->SetHiddenInGame(true);
     BodyMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -35.0f));
     BodyMesh->SetRelativeScale3D(FVector(0.55f, 0.55f, 1.45f));
 
     HeadMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HeadMesh"));
     HeadMesh->SetupAttachment(RootComponent);
     HeadMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    HeadMesh->SetHiddenInGame(true);
     HeadMesh->SetRelativeLocation(FVector(0.0f, 0.0f, 54.0f));
     HeadMesh->SetRelativeScale3D(FVector(0.32f));
 
@@ -65,6 +83,7 @@ ARFAPlayerCharacter::ARFAPlayerCharacter()
     ForwardMarkerMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ForwardMarkerMesh"));
     ForwardMarkerMesh->SetupAttachment(RootComponent);
     ForwardMarkerMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+    ForwardMarkerMesh->SetHiddenInGame(true);
     ForwardMarkerMesh->SetRelativeLocation(FVector(58.0f, 0.0f, -72.0f));
     ForwardMarkerMesh->SetRelativeScale3D(FVector(0.72f, 0.16f, 0.06f));
 

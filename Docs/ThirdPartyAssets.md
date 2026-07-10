@@ -15,3 +15,16 @@ Selected packs:
 - Minigolf Kit: colored flags and simple ball/prop references.
 
 Imported Unreal assets live under `Content/External/Kenney`. Source FBX files and licenses live under `ExternalAssets/Kenney`.
+
+## Poly Haven CC0 textures
+
+Source: https://polyhaven.com/textures
+
+License: Creative Commons Zero (CC0).
+
+Selected 1K diffuse textures:
+
+- Asphalt Floor: https://polyhaven.com/a/asphalt_floor
+- Brick Wall 10: https://polyhaven.com/a/brick_wall_10
+
+Source JPG files live under `ExternalAssets/PolyHaven`. Imported textures and lightweight Unreal materials live under `Content/External/PolyHaven`.

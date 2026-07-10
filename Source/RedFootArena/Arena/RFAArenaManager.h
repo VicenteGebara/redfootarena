@@ -8,6 +8,7 @@ class ARFAGoalActor;
 class USceneComponent;
 class UStaticMesh;
 class UStaticMeshComponent;
+class UMaterialInterface;
 
 UCLASS()
 class REDFOOTARENA_API ARFAArenaManager : public AActor
@@ -58,9 +59,7 @@ protected:
     TSubclassOf<ARFAGoalActor> GoalActorClass;
 
 private:
-    UStaticMeshComponent* CreateArenaPiece(const FString& Name, const FVector& Location, const FVector& Size, bool bBlocksMovement = true, const FLinearColor& Color = FLinearColor::White);
-    UStaticMeshComponent* CreateDecorativeProp(const FString& Name, UStaticMesh* Mesh, const FVector& Location, const FRotator& Rotation, const FVector& Scale);
-    void BuildDecorativeProps(float HalfLength, float HalfWidth);
+    UStaticMeshComponent* CreateArenaPiece(const FString& Name, const FVector& Location, const FVector& Size, bool bBlocksMovement = true, const FLinearColor& Color = FLinearColor::White, UMaterialInterface* Material = nullptr);
     ARFAGoalActor* SpawnGoal(float XSign);
 
     UPROPERTY()
@@ -70,22 +69,10 @@ private:
     UStaticMesh* CubeMesh;
 
     UPROPERTY()
-    UStaticMesh* BannerMesh;
+    UMaterialInterface* AsphaltMaterial;
 
     UPROPERTY()
-    UStaticMesh* ColumnMesh;
-
-    UPROPERTY()
-    UStaticMesh* TrophyMesh;
-
-    UPROPERTY()
-    UStaticMesh* GateMesh;
-
-    UPROPERTY()
-    UStaticMesh* RedFlagMesh;
-
-    UPROPERTY()
-    UStaticMesh* BlueFlagMesh;
+    UMaterialInterface* BrickMaterial;
 
     UPROPERTY()
     TArray<UStaticMeshComponent*> ArenaPieces;

@@ -48,12 +48,8 @@ public:
 private:
     void PlaySound2D(USoundBase* Sound, float VolumeMultiplier, float PitchMultiplier) const;
     void PlayPing(float VolumeMultiplier, float PitchMultiplier) const;
-    void PlayNoise(float VolumeMultiplier, float PitchMultiplier) const;
 
     UPROPERTY()
     USoundBase* PingSound;
 
-    UPROPERTY()
-    USoundBase* NoiseSound;
 };
-

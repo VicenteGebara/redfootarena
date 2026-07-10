@@ -13,17 +13,11 @@ ARFAAudioManager::ARFAAudioManager()
         PingSound = PingAsset.Object;
     }
 
-    static ConstructorHelpers::FObjectFinder<USoundBase> NoiseAsset(TEXT("/Engine/EngineSounds/WhiteNoise.WhiteNoise"));
-    if (NoiseAsset.Succeeded())
-    {
-        NoiseSound = NoiseAsset.Object;
-    }
 }
 
 void ARFAAudioManager::PlayKick()
 {
-    PlayNoise(0.16f, 1.85f);
-    PlayPing(0.22f, 0.62f);
+    PlayPing(0.16f, 0.72f);
 }
 
 void ARFAAudioManager::PlayPass()
@@ -33,8 +27,7 @@ void ARFAAudioManager::PlayPass()
 
 void ARFAAudioManager::PlayGoal()
 {
-    PlayPing(0.6f, 0.5f);
-    PlayNoise(0.11f, 0.55f);
+    PlayPing(0.38f, 0.52f);
 }
 
 void ARFAAudioManager::PlayKickoff()
@@ -86,9 +79,3 @@ void ARFAAudioManager::PlayPing(float VolumeMultiplier, float PitchMultiplier) c
 {
     PlaySound2D(PingSound, VolumeMultiplier, PitchMultiplier);
 }
-
-void ARFAAudioManager::PlayNoise(float VolumeMultiplier, float PitchMultiplier) const
-{
-    PlaySound2D(NoiseSound, VolumeMultiplier, PitchMultiplier);
-}
-

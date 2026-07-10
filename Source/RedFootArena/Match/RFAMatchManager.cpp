@@ -218,7 +218,9 @@ void ARFAMatchManager::CheckBallRecovery()
 
     if (bOutOfBounds)
     {
-        ResetPlayToKickoff();
+        // An ordinary hard shot must not look like a goal or restart the
+        // players. Recover only the ball and keep the match clock running.
+        Ball->ResetBall(BallSpawnLocation);
     }
 }
 
