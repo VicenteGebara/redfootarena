@@ -6,6 +6,12 @@
   "FriendlyName": "RedFoot Arena",
   "Description": "Arcade 3D football arena game focused on a fast offline MVP.",
   "Category": "Games",
+  "Plugins": [
+    {
+      "Name": "AndroidFileServer",
+      "Enabled": false
+    }
+  ],
   "Modules": [
     {
       "Name": "RedFootArena",
