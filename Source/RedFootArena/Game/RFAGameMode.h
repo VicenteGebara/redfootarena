@@ -5,6 +5,7 @@
 #include "RFAGameMode.generated.h"
 
 class ARFAArenaManager;
+class ARFAAudioManager;
 class ARFABallActor;
 class ARFABotCharacter;
 class ARFAMatchManager;
@@ -24,6 +25,9 @@ public:
 protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Classes")
     TSubclassOf<ARFAArenaManager> ArenaManagerClass;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Classes")
+    TSubclassOf<ARFAAudioManager> AudioManagerClass;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Classes")
     TSubclassOf<ARFAMatchManager> MatchManagerClass;
@@ -48,6 +52,9 @@ private:
 
     UPROPERTY()
     ARFAArenaManager* ArenaManager;
+
+    UPROPERTY()
+    ARFAAudioManager* AudioManager;
 
     UPROPERTY()
     ARFAMatchManager* MatchManager;

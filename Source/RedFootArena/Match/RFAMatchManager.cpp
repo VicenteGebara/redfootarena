@@ -103,6 +103,7 @@ void ARFAMatchManager::ResetPlayToKickoff()
     }
 
     ResetRegisteredActors();
+    OnPlayReset.Broadcast();
     QueueKickoff();
 }
 

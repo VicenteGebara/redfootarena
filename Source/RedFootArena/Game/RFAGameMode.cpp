@@ -1,5 +1,6 @@
 #include "Game/RFAGameMode.h"
 #include "Arena/RFAArenaManager.h"
+#include "Audio/RFAAudioManager.h"
 #include "Ball/RFABallActor.h"
 #include "Bot/RFABotCharacter.h"
 #include "Goals/RFAGoalActor.h"
@@ -17,6 +18,7 @@
 ARFAGameMode::ARFAGameMode()
 {
     ArenaManagerClass = ARFAArenaManager::StaticClass();
+    AudioManagerClass = ARFAAudioManager::StaticClass();
     MatchManagerClass = ARFAMatchManager::StaticClass();
     ScoreManagerClass = ARFAScoreManager::StaticClass();
     BallClass = ARFABallActor::StaticClass();
@@ -53,6 +55,7 @@ void ARFAGameMode::InitializeOfflineMatch()
 
     ScoreManager = World->SpawnActor<ARFAScoreManager>(ScoreManagerClass);
     MatchManager = World->SpawnActor<ARFAMatchManager>(MatchManagerClass);
+    AudioManager = World->SpawnActor<ARFAAudioManager>(AudioManagerClass);
     Ball = World->SpawnActor<ARFABallActor>(BallClass, ArenaManager->GetBallSpawnTransform());
 
     if (!MatchManager || !ScoreManager || !Ball)
@@ -61,6 +64,13 @@ void ARFAGameMode::InitializeOfflineMatch()
     }
 
     MatchManager->InitializeMatch(ScoreManager, Ball, ArenaManager->GetBallSpawnTransform().GetLocation());
+    if (AudioManager)
+    {
+        MatchManager->OnGoalScored.AddDynamic(AudioManager, &ARFAAudioManager::HandleGoalScored);
+        MatchManager->OnMatchStarted.AddDynamic(AudioManager, &ARFAAudioManager::HandleMatchStarted);
+        MatchManager->OnMatchEnded.AddDynamic(AudioManager, &ARFAAudioManager::HandleMatchEnded);
+        MatchManager->OnPlayReset.AddDynamic(AudioManager, &ARFAAudioManager::HandlePlayReset);
+    }
 
     for (ARFAGoalActor* Goal : ArenaManager->GetGoals())
     {

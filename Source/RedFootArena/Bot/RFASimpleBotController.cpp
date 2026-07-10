@@ -1,4 +1,5 @@
 #include "Bot/RFASimpleBotController.h"
+#include "Audio/RFAAudioManager.h"
 #include "Ball/RFABallActor.h"
 #include "EngineUtils.h"
 #include "GameFramework/Pawn.h"
@@ -63,6 +64,7 @@ void ARFASimpleBotController::Tick(float DeltaSeconds)
     FVector KickDirection = GetAttackTarget() - CachedBall->GetActorLocation();
     KickDirection.Z = 0.08f;
     CachedBall->ApplyKick(KickDirection, KickImpulse, ControlledPawn);
+    PlayKickSound();
     KickCooldownRemaining = KickCooldownSeconds;
 }
 
@@ -79,6 +81,20 @@ bool ARFASimpleBotController::CanPlayBall() const
     }
 
     return true;
+}
+
+void ARFASimpleBotController::PlayKickSound() const
+{
+    if (!GetWorld())
+    {
+        return;
+    }
+
+    for (TActorIterator<ARFAAudioManager> It(GetWorld()); It; ++It)
+    {
+        It->PlayKick();
+        return;
+    }
 }
 
 ARFABallActor* ARFASimpleBotController::FindBall() const

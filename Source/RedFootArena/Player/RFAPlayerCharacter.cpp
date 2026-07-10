@@ -1,4 +1,5 @@
 #include "Player/RFAPlayerCharacter.h"
+#include "Audio/RFAAudioManager.h"
 #include "Ball/RFABallActor.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -155,7 +156,10 @@ void ARFAPlayerCharacter::KickBall()
         return;
     }
 
-    ApplyBallAction(StatsComponent->GetKickPower(), KickLift);
+    if (ApplyBallAction(StatsComponent->GetKickPower(), KickLift))
+    {
+        PlayBallActionSound(true);
+    }
 }
 
 void ARFAPlayerCharacter::PassBall()
@@ -165,7 +169,10 @@ void ARFAPlayerCharacter::PassBall()
         return;
     }
 
-    ApplyBallAction(StatsComponent->GetPassPower(), PassLift);
+    if (ApplyBallAction(StatsComponent->GetPassPower(), PassLift))
+    {
+        PlayBallActionSound(false);
+    }
 }
 
 void ARFAPlayerCharacter::RequestPlayReset()
@@ -250,18 +257,18 @@ void ARFAPlayerCharacter::StopSprint()
     }
 }
 
-void ARFAPlayerCharacter::ApplyBallAction(float Strength, float Lift)
+bool ARFAPlayerCharacter::ApplyBallAction(float Strength, float Lift)
 {
     if (!GetWorld())
     {
-        return;
+        return false;
     }
 
     for (TActorIterator<ARFAMatchManager> It(GetWorld()); It; ++It)
     {
         if (!It->IsMatchActive())
         {
-            return;
+            return false;
         }
 
         break;
@@ -269,19 +276,20 @@ void ARFAPlayerCharacter::ApplyBallAction(float Strength, float Lift)
 
     if (BallActionCooldownRemaining > 0.0f)
     {
-        return;
+        return false;
     }
 
     ARFABallActor* Ball = FindKickableBall();
     if (!Ball)
     {
-        return;
+        return false;
     }
 
     FVector Direction = GetAimDirection();
     Direction.Z = Lift;
     Ball->ApplyKick(Direction, Strength, this);
     BallActionCooldownRemaining = BallActionCooldown;
+    return true;
 }
 
 ARFABallActor* ARFAPlayerCharacter::FindKickableBall() const
@@ -322,6 +330,28 @@ ARFABallActor* ARFAPlayerCharacter::FindKickableBall() const
     }
 
     return BestBall;
+}
+
+void ARFAPlayerCharacter::PlayBallActionSound(bool bStrongKick) const
+{
+    if (!GetWorld())
+    {
+        return;
+    }
+
+    for (TActorIterator<ARFAAudioManager> It(GetWorld()); It; ++It)
+    {
+        if (bStrongKick)
+        {
+            It->PlayKick();
+        }
+        else
+        {
+            It->PlayPass();
+        }
+
+        return;
+    }
 }
 
 void ARFAPlayerCharacter::ApplyVisualColor(UStaticMeshComponent* MeshComponent, const FLinearColor& Color) const

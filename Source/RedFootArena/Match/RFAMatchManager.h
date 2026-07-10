@@ -10,6 +10,7 @@ class ARFAGoalActor;
 class ARFAScoreManager;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRFAOnMatchStarted);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FRFAOnPlayReset);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FRFAOnMatchEnded, ERedFootTeam, WinningTeam);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FRFAOnMatchGoalScored, ERedFootTeam, ScoringTeam, float, RestartDelay);
 
@@ -79,6 +80,9 @@ public:
 
     UPROPERTY(BlueprintAssignable, Category = "Match")
     FRFAOnMatchStarted OnMatchStarted;
+
+    UPROPERTY(BlueprintAssignable, Category = "Match")
+    FRFAOnPlayReset OnPlayReset;
 
     UPROPERTY(BlueprintAssignable, Category = "Match")
     FRFAOnMatchEnded OnMatchEnded;

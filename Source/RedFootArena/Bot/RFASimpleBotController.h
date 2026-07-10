@@ -42,6 +42,7 @@ protected:
 
 private:
     bool CanPlayBall() const;
+    void PlayKickSound() const;
     ARFABallActor* FindBall() const;
     FVector GetAttackTarget() const;
     FVector GetApproachLocation() const;

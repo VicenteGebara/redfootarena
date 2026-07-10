@@ -52,7 +52,8 @@ protected:
     void LookUp(float Value);
     void StartSprint();
     void StopSprint();
-    void ApplyBallAction(float Strength, float Lift);
+    bool ApplyBallAction(float Strength, float Lift);
+    void PlayBallActionSound(bool bStrongKick) const;
 
     ARFABallActor* FindKickableBall() const;
 

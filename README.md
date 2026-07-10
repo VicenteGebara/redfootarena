@@ -40,6 +40,12 @@ Latest visual pass:
 - match lighting and third-person camera were tuned for better readability;
 - arena remains fully procedural while looking more like a playable test court.
 
+Latest audio pass:
+
+- basic kick and pass feedback sounds;
+- goal, kickoff, reset and match-end audio cues;
+- sounds use engine-provided assets for now, so no manual import step is needed.
+
 Current test controls:
 
 - WASD: move;
